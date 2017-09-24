@@ -8,12 +8,18 @@ var stage = createStage()
 document.body.appendChild(stage)
 var poly = createPolygon({radius: 250, n: 24})
 stage.appendChild(poly.el)
-poly.update()
 
-// window.requestAnimationFrame(updateLoop)
+var nPoints = 24
+window.addEventListener('mousemove', function (evt) {
+  nPoints = 2 + Math.floor(46 * evt.clientX / window.innerWidth)
+})
+
+window.requestAnimationFrame(updateLoop)
 
 function updateLoop () {
-  // window.requestAnimationFrame(updateLoop)
+  window.requestAnimationFrame(updateLoop)
+  poly.n = nPoints
+  poly.update()
 }
 
 function createPolygon (opts) {
@@ -37,43 +43,13 @@ function createPolygon (opts) {
 
   var svg = parent.children[0]
 
-  var points = new Array(nPoints).fill(0).map(function (point, i) {
-    point = point || {}
-    point.theta = i / nPoints * TAU
-    point.x = 0.5 * Math.cos(point.theta) + 0.5
-    point.y = 0.5 * Math.sin(point.theta) + 0.5
-    return point
-  })
-
-  console.log('points', points)
-
-  var lines = []
-  points.forEach(function (p1, i) {
-    var pNext = points[i - 1] || points[points.length - 1]
-    var pPrev = points[i + 1] || points[0]
-    // lines.push(line(p1, pPrev))
-
-    // var chosen = (i === 0) || (i === 3)
-    var chosen = !(i % 8)
-    if (!chosen) return
-
-    // if (i % 4) return
-    points.forEach(function (p2, j) {
-      if (p2 === pNext) return
-      if (p2 === pPrev) return
-
-      lines.push(line(p1, p2))
-    })
-  })
-
-  console.log('lines', lines)
-
   return {
     el: parent,
     svg: svg,
-    points: points,
-    lines: lines,
+    n: nPoints,
     update: function () {
+      svg.innerHTML = ''
+      var lines = createLines(createPoints(this.n))
       lines.forEach(function (line, i) {
         var child = svg.children[i]
         if (!child) {
@@ -86,10 +62,43 @@ function createPolygon (opts) {
         child.setAttributeNS(null, 'y1', line.y1)
         child.setAttributeNS(null, 'x2', line.x2)
         child.setAttributeNS(null, 'y2', line.y2)
-        child.setAttributeNS(null, 'stroke', 'white')
+        child.setAttributeNS(null, 'stroke', 'rgba(255, 255, 255, 0.25)')
         child.setAttributeNS(null, 'stroke-width', '0.001')
       })
     }
+  }
+
+  function createPoints (nPoints) {
+    return new Array(nPoints).fill(0).map(function (point, i) {
+      point = point || {}
+      point.theta = i / nPoints * TAU
+      point.x = 0.5 * Math.cos(point.theta) + 0.5
+      point.y = 0.5 * Math.sin(point.theta) + 0.5
+      return point
+    })
+  }
+
+  function createLines (points) {
+    var lines = []
+
+    points.forEach(function (p1, i) {
+      var pNext = points[i - 1] || points[points.length - 1]
+      var pPrev = points[i + 1] || points[0]
+      // lines.push(line(p1, pPrev))
+
+      // var chosen = (i === 0) || (i === 3)
+      var chosen = !(i % 2)
+      if (!chosen) return
+
+      // if (i % 4) return
+      points.forEach(function (p2, j) {
+        if (p2 === pNext) return
+        if (p2 === pPrev) return
+
+        lines.push(line(p1, p2))
+      })
+    })
+    return lines
   }
 }
 
