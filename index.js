@@ -47,21 +47,22 @@ function createPolygon (opts) {
 
   console.log('points', points)
 
-  // var lines = points.map(function (point, i) {
-  //   var prev = points[i - 1] || points[points.length - 1]
-  //   return line(point, prev)
-  // })
-
   var lines = []
   points.forEach(function (p1, i) {
-    var adj = points[i - 1] || points[points.length - 1]
-    // lines.push(line(point, prev))
+    var pNext = points[i - 1] || points[points.length - 1]
+    var pPrev = points[i + 1] || points[0]
+    // lines.push(line(p1, pPrev))
+
+    // var chosen = (i === 0) || (i === 3)
+    var chosen = !(i % 8)
+    if (!chosen) return
 
     // if (i % 4) return
     points.forEach(function (p2, j) {
-      if (p2 === adj) return
+      if (p2 === pNext) return
+      if (p2 === pPrev) return
 
-      if ((j - 1) > i) lines.push(line(p1, p2))
+      lines.push(line(p1, p2))
     })
   })
 
