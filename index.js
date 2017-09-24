@@ -6,7 +6,7 @@ document.body.style.background = 'rgb(20, 20, 20)'
 
 var stage = createStage()
 document.body.appendChild(stage)
-var poly = createPolygon({radius: 250, n: 12})
+var poly = createPolygon({radius: 250, n: 24})
 stage.appendChild(poly.el)
 poly.update()
 
@@ -47,9 +47,22 @@ function createPolygon (opts) {
 
   console.log('points', points)
 
-  var lines = points.map(function (point, i) {
-    var prev = points[i - 1] || points[points.length - 1]
-    return line(point, prev)
+  // var lines = points.map(function (point, i) {
+  //   var prev = points[i - 1] || points[points.length - 1]
+  //   return line(point, prev)
+  // })
+
+  var lines = []
+  points.forEach(function (p1, i) {
+    var adj = points[i - 1] || points[points.length - 1]
+    // lines.push(line(point, prev))
+
+    // if (i % 4) return
+    points.forEach(function (p2, j) {
+      if (p2 === adj) return
+
+      if ((j - 1) > i) lines.push(line(p1, p2))
+    })
   })
 
   console.log('lines', lines)
@@ -73,7 +86,7 @@ function createPolygon (opts) {
         child.setAttributeNS(null, 'x2', line.x2)
         child.setAttributeNS(null, 'y2', line.y2)
         child.setAttributeNS(null, 'stroke', 'white')
-        child.setAttributeNS(null, 'stroke-width', '0.005')
+        child.setAttributeNS(null, 'stroke-width', '0.001')
       })
     }
   }
