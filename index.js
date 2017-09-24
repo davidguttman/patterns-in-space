@@ -1,12 +1,17 @@
-
-var h = require('hyperscript')
+var query = require('querystring').parse(window.location.search.slice(1))
 var TAU = 2 * Math.PI
 
 document.body.style.background = 'rgb(20, 20, 20)'
 
 var stage = createStage()
 document.body.appendChild(stage)
-var poly = createPolygon({radius: 250, n: 24})
+var poly = createPolygon({
+  // radius: 250,
+  n: parseFloat(query.points || 24),
+  nFocus: parseFloat(query.focus || 12),
+  duration: parseFloat(query.duration || 180),
+  opacity: query.opacity ? query.opacity / 100 : 0.25
+})
 stage.appendChild(poly.el)
 
 // var nPoints = 24
@@ -24,6 +29,9 @@ function updateLoop () {
 
 function createPolygon (opts) {
   var nPoints = opts.n
+  var nFocus = opts.nFocus
+  var duration = opts.duration
+  var opacity = opts.opacity
 
   var ns = 'http://www.w3.org/2000/svg'
   var viewBox = [0, 0, 1, 1].join(' ')
@@ -47,6 +55,8 @@ function createPolygon (opts) {
     el: parent,
     svg: svg,
     n: nPoints,
+    nFocus: nFocus,
+    duration: duration,
     update: function () {
       // svg.innerHTML = ''
       var lines = createLines(createPoints(this.n))
@@ -62,7 +72,7 @@ function createPolygon (opts) {
         child.setAttributeNS(null, 'y1', line.y1)
         child.setAttributeNS(null, 'x2', line.x2)
         child.setAttributeNS(null, 'y2', line.y2)
-        child.setAttributeNS(null, 'stroke', 'rgba(255, 255, 255, 0.25)')
+        child.setAttributeNS(null, 'stroke', `rgba(255, 255, 255, ${opacity})`)
         child.setAttributeNS(null, 'stroke-width', '0.001')
       })
     }
@@ -79,9 +89,7 @@ function createPolygon (opts) {
   }
 
   function createLines (points) {
-    var dur = 48 * 10 * 1000
-
-    var nFocus = 12
+    var dur = duration * 1000
 
     var focusPoints = new Array(nFocus).fill(0).map(function (focus, i) {
       var pr = ((i + 1) * Date.now() % dur) / dur
