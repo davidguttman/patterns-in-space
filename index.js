@@ -9,16 +9,16 @@ document.body.appendChild(stage)
 var poly = createPolygon({radius: 250, n: 24})
 stage.appendChild(poly.el)
 
-var nPoints = 24
-window.addEventListener('mousemove', function (evt) {
-  nPoints = 2 + Math.floor(46 * evt.clientX / window.innerWidth)
-})
+// var nPoints = 24
+// window.addEventListener('mousemove', function (evt) {
+//   nPoints = 2 + Math.floor(46 * evt.clientX / window.innerWidth)
+// })
 
 window.requestAnimationFrame(updateLoop)
 
 function updateLoop () {
   window.requestAnimationFrame(updateLoop)
-  poly.n = nPoints
+  // poly.n = nPoints
   poly.update()
 }
 
@@ -48,7 +48,7 @@ function createPolygon (opts) {
     svg: svg,
     n: nPoints,
     update: function () {
-      svg.innerHTML = ''
+      // svg.innerHTML = ''
       var lines = createLines(createPoints(this.n))
       lines.forEach(function (line, i) {
         var child = svg.children[i]
@@ -86,8 +86,11 @@ function createPolygon (opts) {
       var pPrev = points[i + 1] || points[0]
       // lines.push(line(p1, pPrev))
 
-      // var chosen = (i === 0) || (i === 3)
-      var chosen = !(i % 2)
+      var cA = Math.floor((Date.now() % 10000 / 10000) * points.length)
+      var cB = points.length - Math.floor((Date.now() % 11000 / 11000) * points.length)
+
+      var chosen = (i === cA) || (i === cB)
+      // var chosen = (i === 2) || i =
       if (!chosen) return
 
       // if (i % 4) return
