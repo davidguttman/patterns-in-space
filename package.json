@@ -1,0 +1,19 @@
+{
+  "name": "patterns-in-space",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo index.js -l"
+  },
+  "keywords": [],
+  "author": "David Guttman <david@guttman.io> (http://davidguttman.com/)",
+  "license": "MIT",
+  "devDependencies": {
+    "budo": "^10.0.4",
+    "standard": "^10.0.3"
+  },
+  "dependencies": {
+    "hyperscript": "^2.0.2"
+  }
+}
