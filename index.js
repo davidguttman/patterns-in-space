@@ -79,28 +79,27 @@ function createPolygon (opts) {
   }
 
   function createLines (points) {
+    var dur = 48 * 10 * 1000
+
+    var nFocus = 12
+
+    var focusPoints = new Array(nFocus).fill(0).map(function (focus, i) {
+      var pr = ((i + 1) * Date.now() % dur) / dur
+
+      var theta = pr * TAU
+      return {
+        x: 0.5 * Math.cos(theta) + 0.5,
+        y: 0.5 * Math.sin(theta) + 0.5
+      }
+    })
+
     var lines = []
-
-    points.forEach(function (p1, i) {
-      var pNext = points[i - 1] || points[points.length - 1]
-      var pPrev = points[i + 1] || points[0]
-      // lines.push(line(p1, pPrev))
-
-      var cA = Math.floor((Date.now() % 10000 / 10000) * points.length)
-      var cB = points.length - Math.floor((Date.now() % 11000 / 11000) * points.length)
-
-      var chosen = (i === cA) || (i === cB)
-      // var chosen = (i === 2) || i =
-      if (!chosen) return
-
-      // if (i % 4) return
-      points.forEach(function (p2, j) {
-        if (p2 === pNext) return
-        if (p2 === pPrev) return
-
-        lines.push(line(p1, p2))
+    points.forEach(function (p2) {
+      focusPoints.forEach(function (fp) {
+        lines.push(line(fp, p2))
       })
     })
+
     return lines
   }
 }
