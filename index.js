@@ -6,7 +6,6 @@ document.body.style.background = 'rgb(20, 20, 20)'
 var stage = createStage()
 document.body.appendChild(stage)
 var poly = createPolygon({
-  // radius: 250,
   n: parseFloat(query.points || 24),
   nFocus: parseFloat(query.focus || 12),
   duration: parseFloat(query.duration || 180),
@@ -14,16 +13,10 @@ var poly = createPolygon({
 })
 stage.appendChild(poly.el)
 
-// var nPoints = 24
-// window.addEventListener('mousemove', function (evt) {
-//   nPoints = 2 + Math.floor(46 * evt.clientX / window.innerWidth)
-// })
-
 window.requestAnimationFrame(updateLoop)
 
 function updateLoop () {
   window.requestAnimationFrame(updateLoop)
-  // poly.n = nPoints
   poly.update()
 }
 

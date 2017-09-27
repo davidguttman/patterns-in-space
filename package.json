@@ -4,14 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js -l"
+    "start": "budo index.js -l -d public",
+    "build": "browserify index.js | uglifyjs -mc > public/index.js",
+    "deploy": "npm run build && surge public"
   },
   "keywords": [],
   "author": "David Guttman <david@guttman.io> (http://davidguttman.com/)",
   "license": "MIT",
   "devDependencies": {
+    "browserify": "^14.4.0",
     "budo": "^10.0.4",
-    "standard": "^10.0.3"
+    "standard": "^10.0.3",
+    "surge": "^0.19.0",
+    "uglify-es": "^3.1.2"
   },
   "dependencies": {
     "hyperscript": "^2.0.2"
