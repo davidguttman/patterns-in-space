@@ -1,7 +1,20 @@
-var query = require('querystring').parse(window.location.search.slice(1))
+var qs = require('querystring')
+
+var query = qs.parse(window.location.search.slice(1))
+if (!Object.keys(query).length) {
+  window.location = '/?' + qs.stringify({
+    points: 24,
+    focus: 12,
+    duration: 180,
+    opacity: 25,
+    color: 'white',
+    background: 'black'
+  })
+}
+
 var TAU = 2 * Math.PI
 
-document.body.style.background = 'rgb(20, 20, 20)'
+document.body.style.background = query.background || 'rgb(20, 20, 20)'
 
 var stage = createStage()
 document.body.appendChild(stage)
@@ -9,7 +22,8 @@ var poly = createPolygon({
   n: parseFloat(query.points || 24),
   nFocus: parseFloat(query.focus || 12),
   duration: parseFloat(query.duration || 180),
-  opacity: query.opacity ? query.opacity / 100 : 0.25
+  opacity: query.opacity ? query.opacity / 100 : 0.25,
+  color: query.color || 'white'
 })
 stage.appendChild(poly.el)
 
@@ -25,6 +39,7 @@ function createPolygon (opts) {
   var nFocus = opts.nFocus
   var duration = opts.duration
   var opacity = opts.opacity
+  var color = opts.color
 
   var ns = 'http://www.w3.org/2000/svg'
   var viewBox = [0, 0, 1, 1].join(' ')
@@ -65,7 +80,8 @@ function createPolygon (opts) {
         child.setAttributeNS(null, 'y1', line.y1)
         child.setAttributeNS(null, 'x2', line.x2)
         child.setAttributeNS(null, 'y2', line.y2)
-        child.setAttributeNS(null, 'stroke', `rgba(255, 255, 255, ${opacity})`)
+        child.setAttributeNS(null, 'stroke', color)
+        child.setAttributeNS(null, 'opacity', opacity)
         child.setAttributeNS(null, 'stroke-width', '0.001')
       })
     }
