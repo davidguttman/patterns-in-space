@@ -92,7 +92,7 @@ function createPolygon (opts) {
       point = point || {}
       point.theta = i / nPoints * TAU
       point.x = 0.5 * Math.cos(point.theta) + 0.5
-      point.y = 0.5 * Math.sin(point.theta) + 0.5
+      point.y = 0.5 * 0.75 * Math.sin(point.theta) + 0.5
       return point
     })
   }
@@ -106,7 +106,7 @@ function createPolygon (opts) {
       var theta = pr * TAU
       return {
         x: 0.5 * Math.cos(theta) + 0.5,
-        y: 0.5 * Math.sin(theta) + 0.5
+        y: 0.5 * 0.75 * Math.sin(theta) + 0.5
       }
     })
 
